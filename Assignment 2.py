@@ -9,9 +9,10 @@
 
 import pandas as pd
 from sklearn.svm import SVR
-
+print("reading in files...")
 train = pd.read_csv("./train_signal.csv").fillna(0)
 featcsv = pd.read_csv("./train_feat.csv").fillna(0)
+print("read in files...")
 
 
 # Change the type to integers
@@ -59,9 +60,10 @@ def report(results, n_top=3):
     file.close() 
 
 
-# In[18]:
+# In[42]:
 
 
+print("running classifier + finding best classifiers")
 from sklearn import svm
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
@@ -70,8 +72,8 @@ clf = RandomForestClassifier(n_estimators=20)
 
 param_grid = {"n_estimators": range(30,60),
               "max_depth": range(5,20)}
-
-grid_search = GridSearchCV(clf, param_grid=param_grid, cv=4)
+print(param_grid)
+grid_search = GridSearchCV(clf, param_grid=param_grid,verbose=2, cv=4)
 grid_search.fit(X, y)
 report(grid_search.cv_results_)
 
@@ -85,7 +87,7 @@ report(grid_search.cv_results_)
 import heapq
 features = grid_search.best_estimator_.feature_importances_.tolist()
 print(features)
-heapq.nlargest(10, xrange(len(features)), key=features.__getitem__)
+bestFeaturesIndex = heapq.nlargest(10, xrange(len(features)), key=features.__getitem__)
+print(bestFeaturesIndex)
 
-    
 
