@@ -37,19 +37,11 @@ y = train["Type"].values
 # In[17]:
 
 
-def report(results, n_top=3):
-    file = open("report.txt","w") 
+def report(results, n_top=3,classifier):
+    file = open(classifier,"w") 
     for i in range(1, n_top + 1):
         candidates = np.flatnonzero(results['rank_test_score'] == i)
         for candidate in candidates:
-            print("Model with rank: {0}".format(i))
-            print("Mean validation score: {0:.3f} (std: {1:.3f})".format(
-                  results['mean_test_score'][candidate],
-                  results['std_test_score'][candidate]))
-            print("Parameters: {0}".format(results['params'][candidate]))
-            print("")
-            
- 
             file.write("Model with rank: {0}".format(i)) 
             file.write("Mean validation score: {0:.3f} (std: {1:.3f})".format(
                   results['mean_test_score'][candidate],
@@ -63,19 +55,20 @@ def report(results, n_top=3):
 # In[42]:
 
 
-print("running classifier + finding best classifiers")
-from sklearn import svm
-from sklearn.model_selection import GridSearchCV
-from sklearn.ensemble import RandomForestClassifier
+print("running random forest + finding parameters")
 
-clf = RandomForestClassifier(n_estimators=20)
+#from sklearn.model_selection import GridSearchCV
+#from sklearn.ensemble import RandomForestClassifier
 
-param_grid = {"n_estimators": range(30,60),
+#clf = RandomForestClassifier()
+
+#param_grid = {"n_estimators": range(30,60),
               "max_depth": range(5,20)}
-print(param_grid)
-grid_search = GridSearchCV(clf, param_grid=param_grid,verbose=2, cv=4)
-grid_search.fit(X, y)
-report(grid_search.cv_results_)
+
+#grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
+#grid_search.fit(X, y)
+#report(grid_search.cv_results_,"randomforest.txt")
+
 
 
 # pip3 install keras tensorflow tensorflow-gpu numpy pandas sklearn
@@ -84,10 +77,19 @@ report(grid_search.cv_results_)
 
 
 
-import heapq
-features = grid_search.best_estimator_.feature_importances_.tolist()
-print(features)
-bestFeaturesIndex = heapq.nlargest(10, xrange(len(features)), key=features.__getitem__)
-print(bestFeaturesIndex)
+#import heapq
+#features = grid_search.best_estimator_.feature_importances_.tolist()
+#print(features)
+#bestFeaturesIndex = heapq.nlargest(10, xrange(len(features)), key=features.__getitem__)
+#print(bestFeaturesIndex)
 
 
+from sklearn.neighbors import NearestNeighbors
+clf = NearestNeighbors()
+
+param_grid = {"n_neighbors": range(1,10),
+              "radius": range(1,3)}
+
+grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
+grid_search.fit(X, y)
+report(grid_search.cv_results_,"nearestN.txt")
