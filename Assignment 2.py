@@ -57,13 +57,13 @@ def report(results, n_top=3,classifier):
 
 print("running random forest + finding parameters")
 
-#from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV
 #from sklearn.ensemble import RandomForestClassifier
 
 #clf = RandomForestClassifier()
 
 #param_grid = {"n_estimators": range(30,60),
-              "max_depth": range(5,20)}
+#              "max_depth": range(5,20)}
 
 #grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
 #grid_search.fit(X, y)
@@ -84,11 +84,12 @@ print("running random forest + finding parameters")
 #print(bestFeaturesIndex)
 
 
-from sklearn.neighbors import NearestNeighbors
-clf = NearestNeighbors()
+from sklearn.neighbors import KNeighborsClassifier
+clf = KNeighborsClassifier()
 
-param_grid = {"n_neighbors": range(1,10),
-              "radius": range(1,3)}
+param_grid = {"n_neighbors": range(1,10) + [20,50,100,200],
+              "weights": ["ball_tree","kd_tree","brute"],
+              "leaf_size": range(1,10) + [20,50,100]}
 
 grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
 grid_search.fit(X, y)
