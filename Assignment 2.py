@@ -58,16 +58,16 @@ def report(results,classifier, n_top=3):
 print("running random forest + finding parameters")
 
 from sklearn.model_selection import GridSearchCV
-#from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier
 
-#clf = RandomForestClassifier()
+clf = RandomForestClassifier()
 
-#param_grid = {"n_estimators": range(30,60),
-#              "max_depth": range(5,20)}
+param_grid = {"n_estimators": list(range(30,60)) + [100,200,500,1000],
+              "max_depth": list(range(5,20)) + [100,200,500,1000]}
 
-#grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
-#grid_search.fit(X, y)
-#report(grid_search.cv_results_,"randomforest.txt")
+grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
+grid_search.fit(X, y)
+report(grid_search.cv_results_,"randomforest.txt")
 
 
 
