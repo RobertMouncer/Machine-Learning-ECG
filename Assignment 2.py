@@ -25,16 +25,16 @@ train["Type"]=np.where(train["Type"]=="~",0,
                       np.where(train["Type"]=="A",1,
                       np.where(train["Type"]=="N",2,3)))
 
-test["Type"]=np.where(test["Type"]=="~",0,
-                      np.where(test["Type"]=="A",1,
-                      np.where(test["Type"]=="N",2,3)))
+#test["Type"]=np.where(test["Type"]=="~",0,
+#                      np.where(test["Type"]=="A",1,
+#                      np.where(test["Type"]=="N",2,3)))
 # In[4]:
 
 
 X = featcsv.values[:,2:]
-testX = testFeatCsv.values[:,2:]
+#testX = testFeatCsv.values[:,2:]
 y = train["Type"].values
-testY = test["Type"].values
+#testY = test["Type"].values
 
 # In[17]:
 
@@ -53,6 +53,9 @@ def report(results,classifier, n_top=3):
 
     file.close() 
 
+#def outputResults(prediction):
+#    df = DataFrame(prediction, columns = ['',''])
+#    results.to_csv("submission.csv")
 
 # In[42]:
 
@@ -60,28 +63,34 @@ def report(results,classifier, n_top=3):
 print("running random forest + finding parameters")
 
 from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 from sklearn.ensemble import RandomForestClassifier
 
 clf = RandomForestClassifier()
 
-param_grid = {"n_estimators": list(range(30,60)) + [100,200,500,1000],
-              "max_depth": list(range(5,20)) + [100,200,500,1000]}
+param_dist  = {"n_estimators": range(10,5000,10),
+              "max_depth": range(10,5000,10)}
 
-grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
-grid_search.fit(X, y)
-report(grid_search.cv_results_,"randomforest.txt")
+#grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
+#grid_search.fit(X, y)
+#report(grid_search.cv_results_,"randomforest.txt")
 
+random_search = RandomizedSearchCV(clf, param_distributions=param_dist,
+                                   n_iter=500, cv=4,random_state=64,n_jobs=-1,verbose=2)
 
-
+random_search.fit(X, y)
+report(random_search.cv_results_,"randomforest.txt")
 # pip3 install keras tensorflow tensorflow-gpu numpy pandas sklearn
 
 # In[41]:
 
 
 
-import heapq
-features = grid_search.best_estimator_.feature_importances_.tolist()
-print(features)
+#import heapq
+#features = grid_search.best_estimator_.feature_importances_.tolist()
+#print(features)
+
+
 bestFeaturesIndex = heapq.nlargest(10, xrange(len(features)), key=features.__getitem__)
 print(bestFeaturesIndex)
 
@@ -89,22 +98,34 @@ print(bestFeaturesIndex)
 from sklearn.neighbors import KNeighborsClassifier
 clf = KNeighborsClassifier()
 
-param_grid = {"n_neighbors": list(range(1,10)) + [20,50,100,200],
+param_dist = {"n_neighbors": range(1,40,1),
               "algorithm": ["ball_tree","kd_tree","brute"],
-              "leaf_size": list(range(1,10)) + [20,50,100],
+              "leaf_size": range(1,20,1),
               "weights": ["uniform","distance"]}
 
-grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
-grid_search.fit(X, y)
-report(grid_search.cv_results_,"nearestN.txt")
+#grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
+#grid_search.fit(X, y)
+#report(grid_search.cv_results_,"nearestN.txt")
 
+
+random_search = RandomizedSearchCV(clf, param_distributions=param_dist,
+                                   n_iter=100, cv=4,random_state=64,n_jobs=-1,verbose=2)
+
+random_search.fit(X, y)
+report(random_search.cv_results_,"KNN.txt")
 
 from sklearn.svm import SVC
+
 clf = SVC()
 
-param_grid = {"kernel": ["linear","poly","rbf"]}
+param_dist = {"kernel": ["linear","poly","rbf"]}
 
-grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
-grid_search.fit(X, y)
-report(grid_search.cv_results_,"SVM.txt")
+#grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
+#grid_search.fit(X, y)
+#report(grid_search.cv_results_,"SVM.txt")
 
+random_search = RandomizedSearchCV(clf, param_distributions=param_dist,
+                                   n_iter=3, cv=4,random_state=64,n_jobs=-1,verbose=2)
+
+random_search.fit(X, y)
+report(random_search.cv_results_,"SVM.txt")
