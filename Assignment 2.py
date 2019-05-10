@@ -1,8 +1,5 @@
+#!/usr/bin/env python3
 
-# coding: utf-8
-
-# Read in files
-# fill in blank values
 
 # In[2]:
 
@@ -11,6 +8,9 @@ import pandas as pd
 print("reading in files...")
 train = pd.read_csv("./train_signal.csv").fillna(0)
 featcsv = pd.read_csv("./train_feat.csv").fillna(0)
+
+test = pd.read_csv("./test_signal.csv").fillna(0)
+testFeatCsv = pd.read_csv("./test_feat.csv").fillna(0)
 print("read in files...")
 
 
@@ -25,13 +25,16 @@ train["Type"]=np.where(train["Type"]=="~",0,
                       np.where(train["Type"]=="A",1,
                       np.where(train["Type"]=="N",2,3)))
 
-
+test["Type"]=np.where(test["Type"]=="~",0,
+                      np.where(test["Type"]=="A",1,
+                      np.where(test["Type"]=="N",2,3)))
 # In[4]:
 
 
 X = featcsv.values[:,2:]
+testX = testFeatCsv.values[:,2:]
 y = train["Type"].values
-
+testY = test["Type"].values
 
 # In[17]:
 
@@ -64,7 +67,7 @@ clf = RandomForestClassifier()
 param_grid = {"n_estimators": list(range(30,60)) + [100,200,500,1000],
               "max_depth": list(range(5,20)) + [100,200,500,1000]}
 
-grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
+grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
 grid_search.fit(X, y)
 report(grid_search.cv_results_,"randomforest.txt")
 
@@ -91,7 +94,7 @@ param_grid = {"n_neighbors": list(range(1,10)) + [20,50,100,200],
               "leaf_size": list(range(1,10)) + [20,50,100],
               "weights": ["uniform","distance"]}
 
-grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
+grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
 grid_search.fit(X, y)
 report(grid_search.cv_results_,"nearestN.txt")
 
@@ -99,9 +102,9 @@ report(grid_search.cv_results_,"nearestN.txt")
 from sklearn.svm import SVC
 clf = SVC()
 
-param_grid = {"kernel": ["linear","poly","rbf", "sigmoid"]}
+param_grid = {"kernel": ["linear","poly","rbf"]}
 
-grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
+grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
 grid_search.fit(X, y)
 report(grid_search.cv_results_,"SVM.txt")
 
