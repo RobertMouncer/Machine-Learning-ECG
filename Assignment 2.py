@@ -88,8 +88,9 @@ from sklearn.neighbors import KNeighborsClassifier
 clf = KNeighborsClassifier()
 
 param_grid = {"n_neighbors": list(range(1,10)) + [20,50,100,200],
-              "weights": ["ball_tree","kd_tree","brute"],
-              "leaf_size": list(range(1,10)) + [20,50,100]}
+              "algorithm": ["ball_tree","kd_tree","brute"],
+              "leaf_size": list(range(1,10)) + [20,50,100],
+              "weights": ["uniform","distance"]}
 
 grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
 grid_search.fit(X, y)
