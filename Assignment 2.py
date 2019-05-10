@@ -8,7 +8,6 @@
 
 
 import pandas as pd
-from sklearn.svm import SVR
 print("reading in files...")
 train = pd.read_csv("./train_signal.csv").fillna(0)
 featcsv = pd.read_csv("./train_feat.csv").fillna(0)
@@ -56,18 +55,18 @@ def report(results,classifier, n_top=3):
 
 
 print("running random forest + finding parameters")
-#
-#from sklearn.model_selection import GridSearchCV
-#from sklearn.ensemble import RandomForestClassifier
-#
-#clf = RandomForestClassifier()
-#
-#param_grid = {"n_estimators": list(range(30,60)) + [100,200,500,1000],
-#              "max_depth": list(range(5,20)) + [100,200,500,1000]}
-#
-#grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
-#grid_search.fit(X, y)
-#report(grid_search.cv_results_,"randomforest.txt")
+
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+
+clf = RandomForestClassifier()
+
+param_grid = {"n_estimators": list(range(30,60)) + [100,200,500,1000],
+              "max_depth": list(range(5,20)) + [100,200,500,1000]}
+
+grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
+grid_search.fit(X, y)
+report(grid_search.cv_results_,"randomforest.txt")
 
 
 
@@ -77,24 +76,24 @@ print("running random forest + finding parameters")
 
 
 
-#import heapq
-#features = grid_search.best_estimator_.feature_importances_.tolist()
-#print(features)
-#bestFeaturesIndex = heapq.nlargest(10, xrange(len(features)), key=features.__getitem__)
-#print(bestFeaturesIndex)
+import heapq
+features = grid_search.best_estimator_.feature_importances_.tolist()
+print(features)
+bestFeaturesIndex = heapq.nlargest(10, xrange(len(features)), key=features.__getitem__)
+print(bestFeaturesIndex)
 
 
-#from sklearn.neighbors import KNeighborsClassifier
-#clf = KNeighborsClassifier()
-#
-#param_grid = {"n_neighbors": list(range(1,10)) + [20,50,100,200],
-#              "algorithm": ["ball_tree","kd_tree","brute"],
-#              "leaf_size": list(range(1,10)) + [20,50,100],
-#              "weights": ["uniform","distance"]}
-#
-#grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
-#grid_search.fit(X, y)
-#report(grid_search.cv_results_,"nearestN.txt")
+from sklearn.neighbors import KNeighborsClassifier
+clf = KNeighborsClassifier()
+
+param_grid = {"n_neighbors": list(range(1,10)) + [20,50,100,200],
+              "algorithm": ["ball_tree","kd_tree","brute"],
+              "leaf_size": list(range(1,10)) + [20,50,100],
+              "weights": ["uniform","distance"]}
+
+grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
+grid_search.fit(X, y)
+report(grid_search.cv_results_,"nearestN.txt")
 
 
 from sklearn.svm import SVC
