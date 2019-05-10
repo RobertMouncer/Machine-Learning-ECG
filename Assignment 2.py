@@ -56,18 +56,18 @@ def report(results,classifier, n_top=3):
 
 
 print("running random forest + finding parameters")
-
-from sklearn.model_selection import GridSearchCV
-from sklearn.ensemble import RandomForestClassifier
-
-clf = RandomForestClassifier()
-
-param_grid = {"n_estimators": list(range(30,60)) + [100,200,500,1000],
-              "max_depth": list(range(5,20)) + [100,200,500,1000]}
-
-grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
-grid_search.fit(X, y)
-report(grid_search.cv_results_,"randomforest.txt")
+#
+#from sklearn.model_selection import GridSearchCV
+#from sklearn.ensemble import RandomForestClassifier
+#
+#clf = RandomForestClassifier()
+#
+#param_grid = {"n_estimators": list(range(30,60)) + [100,200,500,1000],
+#              "max_depth": list(range(5,20)) + [100,200,500,1000]}
+#
+#grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
+#grid_search.fit(X, y)
+#report(grid_search.cv_results_,"randomforest.txt")
 
 
 
@@ -84,14 +84,25 @@ report(grid_search.cv_results_,"randomforest.txt")
 #print(bestFeaturesIndex)
 
 
-from sklearn.neighbors import KNeighborsClassifier
-clf = KNeighborsClassifier()
+#from sklearn.neighbors import KNeighborsClassifier
+#clf = KNeighborsClassifier()
+#
+#param_grid = {"n_neighbors": list(range(1,10)) + [20,50,100,200],
+#              "algorithm": ["ball_tree","kd_tree","brute"],
+#              "leaf_size": list(range(1,10)) + [20,50,100],
+#              "weights": ["uniform","distance"]}
+#
+#grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
+#grid_search.fit(X, y)
+#report(grid_search.cv_results_,"nearestN.txt")
 
-param_grid = {"n_neighbors": list(range(1,10)) + [20,50,100,200],
-              "algorithm": ["ball_tree","kd_tree","brute"],
-              "leaf_size": list(range(1,10)) + [20,50,100],
-              "weights": ["uniform","distance"]}
+
+from sklearn.svm import SVC
+clf = SVC()
+
+param_grid = {"kernel": ["linear","poly","rbf", "sigmoid"]}
 
 grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=10,verbose=2, cv=4)
 grid_search.fit(X, y)
-report(grid_search.cv_results_,"nearestN.txt")
+report(grid_search.cv_results_,"SVM.txt")
+
