@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#Random Search file
+#Grid Search file
 
 # In[2]:
 
@@ -34,7 +34,7 @@ train["Type"]=np.where(train["Type"]=="~",0,
 X = featcsv.values[:,2:]
 #testX = testFeatCsv.values[:,2:]
 y = train["Type"].values
-#testY = test["Type"].values
+
 
 # In[17]:
 
@@ -63,23 +63,23 @@ def report(results,classifier, n_top=3):
 print("running random forest + finding parameters")
 
 from sklearn.model_selection import GridSearchCV
-from sklearn.model_selection import RandomizedSearchCV
+#from sklearn.model_selection import RandomizedSearchCV
 from sklearn.ensemble import RandomForestClassifier
 
 clf = RandomForestClassifier()
 
-param_dist  = {"n_estimators": range(10,5000,10),
-              "max_depth": range(10,5000,10)}
+param_grid  = {"n_estimators": range(1800,3900,10),
+              "max_depth": range(800,900,10)}
 
-#grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
-#grid_search.fit(X, y)
-#report(grid_search.cv_results_,"randomforest.txt")
+grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
+grid_search.fit(X, y)
+report(grid_search.cv_results_,"randomforestGS.txt")
 
-random_search = RandomizedSearchCV(clf, param_distributions=param_dist,
-                                   n_iter=500, cv=4,random_state=64,n_jobs=-1,verbose=2)
+#random_search = RandomizedSearchCV(clf, param_distributions=param_dist,
+    #                               n_iter=500, cv=4,random_state=64,n_jobs=-1,verbose=2)
 
-random_search.fit(X, y)
-report(random_search.cv_results_,"randomforest.txt")
+#random_search.fit(X, y)
+#report(random_search.cv_results_,"randomforest.txt")
 # pip3 install keras tensorflow tensorflow-gpu numpy pandas sklearn
 
 # In[41]:
@@ -91,27 +91,27 @@ report(random_search.cv_results_,"randomforest.txt")
 #print(features)
 
 
-bestFeaturesIndex = heapq.nlargest(10, xrange(len(features)), key=features.__getitem__)
-print(bestFeaturesIndex)
+#bestFeaturesIndex = heapq.nlargest(10, xrange(len(features)), key=features.__getitem__)
+#print(bestFeaturesIndex)
 
 
 from sklearn.neighbors import KNeighborsClassifier
 clf = KNeighborsClassifier()
 
-param_dist = {"n_neighbors": range(1,40,1),
-              "algorithm": ["ball_tree","kd_tree","brute"],
+param_grid = {"n_neighbors": range(10,30,1),
+              "algorithm": ["brute"],
               "leaf_size": range(1,20,1),
-              "weights": ["uniform","distance"]}
+              "weights": ["distance"]}
 
-#grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
-#grid_search.fit(X, y)
-#report(grid_search.cv_results_,"nearestN.txt")
+grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
+grid_search.fit(X, y)
+report(grid_search.cv_results_,"nearestNGS.txt")
 
 
-random_search = RandomizedSearchCV(clf, param_distributions=param_dist,
-                                   n_iter=100, cv=4,random_state=64,n_jobs=-1,verbose=2)
-
-random_search.fit(X, y)
-report(random_search.cv_results_,"KNN.txt")
+#random_search = RandomizedSearchCV(clf, param_distributions=param_dist,
+#                                   n_iter=100, cv=4,random_state=64,n_jobs=-1,verbose=2)
+#
+#random_search.fit(X, y)
+#report(random_search.cv_results_,"KNN.txt")
 
 
