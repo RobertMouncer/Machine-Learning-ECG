@@ -68,7 +68,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 clf = RandomForestClassifier()
 
-param_grid  = {"n_estimators": range(1800,3900,10),
+param_grid  = {"n_estimators": range(1800,1900,10),
               "max_depth": range(800,900,10)}
 
 grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
