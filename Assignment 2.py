@@ -62,24 +62,24 @@ def report(results,classifier, n_top=3):
 
 print("running random forest + finding parameters")
 
-from sklearn.model_selection import GridSearchCV
+#from sklearn.model_selection import GridSearchCV
 from sklearn.model_selection import RandomizedSearchCV
-from sklearn.ensemble import RandomForestClassifier
+#from sklearn.ensemble import RandomForestClassifier
 
-clf = RandomForestClassifier()
-
-param_dist  = {"n_estimators": range(10,5000,10),
-              "max_depth": range(10,5000,10)}
+#clf = RandomForestClassifier()
+#
+#param_dist  = {"n_estimators": range(10,5000,10),
+#              "max_depth": range(10,5000,10)}
 
 #grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
 #grid_search.fit(X, y)
 #report(grid_search.cv_results_,"randomforest.txt")
 
-random_search = RandomizedSearchCV(clf, param_distributions=param_dist,
-                                   n_iter=500, cv=4,random_state=64,n_jobs=-1,verbose=2)
-
-random_search.fit(X, y)
-report(random_search.cv_results_,"randomforest.txt")
+#random_search = RandomizedSearchCV(clf, param_distributions=param_dist,
+#                                   n_iter=500, cv=4,random_state=64,n_jobs=-1,verbose=2)
+#
+#random_search.fit(X, y)
+#report(random_search.cv_results_,"randomforest.txt")
 # pip3 install keras tensorflow tensorflow-gpu numpy pandas sklearn
 
 # In[41]:
@@ -91,27 +91,32 @@ report(random_search.cv_results_,"randomforest.txt")
 #print(features)
 
 
-bestFeaturesIndex = heapq.nlargest(10, xrange(len(features)), key=features.__getitem__)
-print(bestFeaturesIndex)
-
-
-from sklearn.neighbors import KNeighborsClassifier
-clf = KNeighborsClassifier()
-
-param_dist = {"n_neighbors": range(1,40,1),
-              "algorithm": ["ball_tree","kd_tree","brute"],
-              "leaf_size": range(1,20,1),
-              "weights": ["uniform","distance"]}
+#from sklearn.neighbors import KNeighborsClassifier
+#clf = KNeighborsClassifier()
+#
+#param_dist = {"n_neighbors": range(1,40,1),
+#              "algorithm": ["ball_tree","kd_tree","brute"],
+#              "leaf_size": range(1,20,1),
+#              "weights": ["uniform","distance"]}
 
 #grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
 #grid_search.fit(X, y)
 #report(grid_search.cv_results_,"nearestN.txt")
 
 
+#random_search = RandomizedSearchCV(clf, param_distributions=param_dist,
+#                                   n_iter=100, cv=4,random_state=64,n_jobs=-1,verbose=2)
+#
+#random_search.fit(X, y)
+#report(random_search.cv_results_,"KNN.txt")
+from sklearn.ensemble import GradientBoostingClassifier
+clf = GradientBoostingClassifier()
+
+param_dist = {"n_estimators": range(100,3000,10),
+              "max_depth":  range(10,500,10)}
+
 random_search = RandomizedSearchCV(clf, param_distributions=param_dist,
-                                   n_iter=100, cv=4,random_state=64,n_jobs=-1,verbose=2)
+                                   n_iter=250, cv=4,random_state=64,n_jobs=-1,verbose=2)
 
 random_search.fit(X, y)
-report(random_search.cv_results_,"KNN.txt")
-
-
+report(random_search.cv_results_,"boost.txt")

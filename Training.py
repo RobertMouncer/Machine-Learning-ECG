@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 #Grid Search file
-
+import os
+cwd = os.getcwd()  # Get the current working directory (cwd)
+files = os.listdir(cwd)  # Get all the files in that directory
+print("Files in '%s': %s" % (cwd, files))
 # In[2]:
 
 
@@ -65,7 +68,7 @@ print("running random forest + finding parameters")
 
 from sklearn.ensemble import RandomForestClassifier
 
-clf = RandomForestClassifier(max_depth=750, n_estimators=1730)
+clf = RandomForestClassifier(max_depth=800, n_estimators=1890)
 
 clf.fit(X, y)
 prediction = clf.predict(testX)
