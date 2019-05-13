@@ -32,6 +32,9 @@ def outputResults(output_data,filename):
 # In[3]:
 print("Building model...")
 
+epochs = 3
+batch_size = 50
+
 model = Sequential()
 
 model.add(Conv2D(2, kernel_size=3, activation=’relu’))
@@ -47,7 +50,7 @@ model.add(Dense(4, activation='softmax'))
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-model.fit(X,y,epochs=6)
+model.fit(X,y,epochs=epochs,batch_size=batch_size)
 
 prediction = model.predict(testX)
 print(prediction)
