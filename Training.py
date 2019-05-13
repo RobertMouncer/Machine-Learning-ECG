@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 #Grid Search file
-import os
-cwd = os.getcwd()  # Get the current working directory (cwd)
-files = os.listdir(cwd)  # Get all the files in that directory
-print("Files in '%s': %s" % (cwd, files))
+
 # In[2]:
 
 
@@ -63,7 +60,26 @@ def outputResults(output_data,filename):
 # In[42]:
 
 
-print("running random forest + finding parameters")
+print("running Boost")
+
+
+from sklearn.ensemble import GradientBoostingClassifier
+
+clf = GradientBoostingClassifier(max_depth=10, n_estimators=250)
+
+clf.fit(X, y)
+prediction = clf.predict(testX)
+
+prediction = np.where(prediction==0,'~',np.where(prediction==1,'A',np.where(prediction==2,'N','O')))
+output_data = {'ID':list(testFeatCsv.values[:,0]),
+                   'Predicted': list(prediction)}
+outputResults(output_data,"boostResults.csv")
+
+
+# In[42]:
+
+
+print("running random forest")
 
 
 from sklearn.ensemble import RandomForestClassifier
@@ -72,9 +88,6 @@ clf = RandomForestClassifier(max_depth=800, n_estimators=1890)
 
 clf.fit(X, y)
 prediction = clf.predict(testX)
-
-
-# In[44]:
 
 prediction = np.where(prediction==0,'~',np.where(prediction==1,'A',np.where(prediction==2,'N','O')))
 output_data = {'ID':list(testFeatCsv.values[:,0]),
@@ -85,7 +98,7 @@ outputResults(output_data,"forestResults.csv")
 # In[41]:
 
 
-
+print("running KNN")
 from sklearn.neighbors import KNeighborsClassifier
 clf = KNeighborsClassifier(n_neighbors=19,algorithm="brute", leaf_size=1,weights="distance")
 

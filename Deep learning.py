@@ -1,7 +1,53 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun May 12 18:32:24 2019
+import pandas as pd
+from keras.models import Sequential
+from keras.layers import Dense, Conv2D, Flatten
+import numpy as np
 
-@author: rdm10
-"""
+print("reading in files...")
+train = pd.read_csv("./train_signal.csv").fillna(0)
 
+test = pd.read_csv("./test_signal.csv").fillna(0)
+print("read in files...")
+
+# In[3]:
+
+
+
+
+train["Type"]=np.where(train["Type"]=="~",0,
+                      np.where(train["Type"]=="A",1,
+                      np.where(train["Type"]=="N",2,3)))
+
+
+# In[4]:
+X = train.values[:,2:]
+testX = test.values[:,1:]
+y = train["Type"].values
+
+# In[4]:
+def outputResults(output_data,filename):
+    
+    df = pd.DataFrame(output_data, columns = ['ID','Predicted'])
+    df.to_csv(filename, index=None, header=True)
+# In[3]:
+print("Building model...")
+
+model = Sequential()
+
+model.add(Conv2D(2, kernel_size=3, activation=’relu’))
+
+model.add(Conv2D(2, kernel_size=3, activation='relu'))
+
+model.add(Flatten())
+
+
+#output layer
+model.add(Dense(4, activation='softmax'))
+
+
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+model.fit(X,y,epochs=6)
+
+prediction = model.predict(testX)
+print(prediction)
