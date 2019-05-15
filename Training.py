@@ -44,6 +44,8 @@ duplicates = list(firstDups.index.values) + list(lastDups.index.values)
 # In[17]:
 
 X = np.delete(X,list(duplicates),axis=0)
+len(X)
+print(X.shape)
 # In[17]:
 y = np.delete(y,list(duplicates),axis=0)
 len(y)
@@ -101,7 +103,7 @@ prediction = clf.predict(testX)
 prediction = np.where(prediction==0,'~',np.where(prediction==1,'A',np.where(prediction==2,'N','O')))
 output_data = {'ID':list(testFeatCsv.values[:,0]),
                    'Predicted': list(prediction)}
-outputResults(output_data,"boostResults.csv")
+outputResults(output_data,"boostResults2.csv")
 # In[42]:
 
 
