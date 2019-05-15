@@ -1,6 +1,6 @@
 import pandas as pd
 from keras.models import Sequential
-from keras.layers import Flatten, Dense, Conv1D
+from keras.layers import Flatten, Dense, Conv1D, GlobalAveragePooling1D, MaxPooling1D, Dropout
 import tensorflow as tf
 import numpy as np
 
@@ -34,7 +34,7 @@ duplicates = list(firstDups.index.values) + list(lastDups.index.values)
 # In[4]:
 #print(list(firstDups.index.values))
 X = np.delete(X,list(duplicates),axis=0)
-
+y = np.delete(y,list(duplicates),axis=0)
 # In[4]:
 def outputResults(output_data,filename):
     
@@ -45,26 +45,40 @@ def outputResults(output_data,filename):
 from keras.utils import to_categorical
 
 y_train = to_categorical(y)
-print(train["Type"])
 # In[3]:
 print("Building model...")
-input_shape = X[1].shape
-
+input_shape = (X.shape[1],1)
+print(input_shape)
+print(X.shape)
+# In[3]:
 model = Sequential()
-model.add(Dense(units=20, activation='relu', input_shape=input_shape))
+model.add(Dense(units=50, activation='relu', input_shape=input_shape))
+#model.add(Dense(4, activation='softmax'))
+
+model.add(Conv1D(100, (10), activation='relu'))
+model.add(Conv1D(100, 10, activation='relu'))
+model.add(MaxPooling1D(3))
+model.add(Conv1D(160, 10, activation='relu'))
+model.add(Conv1D(160, 10, activation='relu'))
+model.add(GlobalAveragePooling1D())
+model.add(Dropout(0.5))
 model.add(Dense(4, activation='softmax'))
+print(model.summary())
 model.compile(optimizer='rmsprop', loss='categorical_crossentropy',metrics=['accuracy'])
 
 # In[3]:
-model.fit(X, y_train, epochs=5)
+x_train_reshape = X.reshape(X.shape[0], X.shape[1],1)
+model.fit(x_train_reshape, y_train, epochs=5)
 # In[3]:
 prediction = model.predict(testX)
 predmax = np.argmax(prediction,1)
 
-#predmax = np.where(predmax==0,'~',np.where(predmax==1,'A',np.where(predmax==2,'N','O')))
 res = np.array(list("~ANO"))[predmax]
 
 output_data = {'ID':list(test.values[:,0]),
                    'Predicted': list(res)}
 
-outputResults(output_data,"knnResults.csv")
+outputResults(output_data,"cnnResults.csv")
+# In[3]:
+test_loss, test_acc = model.evaluate(X, y_train)
+print('Test accuracy:', test_acc)
