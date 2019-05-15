@@ -34,7 +34,19 @@ X = featcsv.values[:,2:]
 testX = testFeatCsv.values[:,1:]
 y = train["Type"].values
 
+# In[4]:
+#https://thispointer.com/pandas-find-duplicate-rows-in-a-dataframe-based-on-all-or-selected-columns-using-dataframe-duplicated-in-python/
+dfObj = pd.DataFrame(X)
+firstDups = dfObj[dfObj.duplicated()]
+lastDups = dfObj[dfObj.duplicated(keep='last')]
+duplicates = list(firstDups.index.values) + list(lastDups.index.values)
 
+# In[17]:
+
+X = np.delete(X,list(duplicates),axis=0)
+# In[17]:
+y = np.delete(y,list(duplicates),axis=0)
+len(y)
 # In[17]:
 
 
@@ -75,7 +87,21 @@ output_data = {'ID':list(testFeatCsv.values[:,0]),
                    'Predicted': list(prediction)}
 outputResults(output_data,"boostResults.csv")
 
+# In[42]:
+print("running Boost2")
 
+
+from sklearn.ensemble import GradientBoostingClassifier
+
+clf = GradientBoostingClassifier(max_depth=10, n_estimators=350)
+
+clf.fit(X, y)
+prediction = clf.predict(testX)
+
+prediction = np.where(prediction==0,'~',np.where(prediction==1,'A',np.where(prediction==2,'N','O')))
+output_data = {'ID':list(testFeatCsv.values[:,0]),
+                   'Predicted': list(prediction)}
+outputResults(output_data,"boostResults.csv")
 # In[42]:
 
 

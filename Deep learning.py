@@ -19,8 +19,21 @@ train["Type"]=np.where(train["Type"]=="~",0,
 
 # In[4]:
 X = train.values[:,2:]
+
+
 testX = test.values[:,1:]
 y = train["Type"].values
+
+# In[4]:
+#https://thispointer.com/pandas-find-duplicate-rows-in-a-dataframe-based-on-all-or-selected-columns-using-dataframe-duplicated-in-python/
+dfObj = pd.DataFrame(X)
+firstDups = dfObj[dfObj.duplicated()]
+lastDups = dfObj[dfObj.duplicated(keep='last')]
+duplicates = list(firstDups.index.values) + list(lastDups.index.values)
+
+# In[4]:
+#print(list(firstDups.index.values))
+X = np.delete(X,list(duplicates),axis=0)
 
 # In[4]:
 def outputResults(output_data,filename):
