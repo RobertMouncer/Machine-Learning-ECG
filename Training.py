@@ -29,12 +29,12 @@ train["Type"]=np.where(train["Type"]=="~",0,
 
 # In[4]:
 
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import StandardScaler
 X = featcsv.values[:,2:]
 testX = testFeatCsv.values[:,1:]
 y = train["Type"].values
 print("compute min max")
-scaler = MinMaxScaler()
+scaler = StandardScaler()
 X = scaler.fit_transform(X)
 testX = scaler.transform(testX)
 
@@ -48,11 +48,11 @@ duplicates = list(firstDups.index.values) + list(lastDups.index.values)
 
 # In[17]:
 
-#X = np.delete(X,list(duplicates),axis=0)
+X = np.delete(X,list(duplicates),axis=0)
 len(X)
 print(X.shape)
 # In[17]:
-#y = np.delete(y,list(duplicates),axis=0)
+y = np.delete(y,list(duplicates),axis=0)
 len(y)
 # In[17]:
 
