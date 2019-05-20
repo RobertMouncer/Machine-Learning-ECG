@@ -79,6 +79,19 @@ def outputResults(output_data,filename):
 # In[42]:
 
 
+print("running XBoost")
+
+from xgboost import XGBClassifier
+model = XGBClassifier(max_depth=10)
+model.fit(X, y)
+prediction = model.predict(testX)
+prediction = np.where(prediction==0,'~',np.where(prediction==1,'A',np.where(prediction==2,'N','O')))
+output_data = {'ID':list(testFeatCsv.values[:,0]),
+                   'Predicted': list(prediction)}
+outputResults(output_data,"xBoostResults.csv")
+
+
+
 print("running Boost")
 
 
