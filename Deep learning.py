@@ -21,11 +21,17 @@ train["Type"]=np.where(train["Type"]=="~",0,
                       np.where(train["Type"]=="N",2,3)))
 
 
+
+from sklearn.preprocessing import StandardScaler
 X = train.values[:,2:]
-
-
 testX = test.values[:,1:]
 y = train["Type"].values
+print("compute min max")
+scaler = StandardScaler()
+X = scaler.fit_transform(X)
+testX = scaler.transform(testX)
+
+
 
 print("data preprocessing...")
 #https://thispointer.com/pandas-find-duplicate-rows-in-a-dataframe-based-on-all-or-selected-columns-using-dataframe-duplicated-in-python/

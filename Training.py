@@ -7,10 +7,10 @@
 import pandas as pd
 
 print("reading in files...")
-train = pd.read_csv("./train_signal.csv").fillna(0)
+
 featcsv = pd.read_csv("./train_feat.csv").fillna(0)
 
-test = pd.read_csv("./test_signal.csv").fillna(0)
+
 testFeatCsv = pd.read_csv("./test_feat.csv").fillna(0)
 print("read in files...")
 
@@ -22,9 +22,9 @@ print("read in files...")
 
 import numpy as np
 
-train["Type"]=np.where(train["Type"]=="~",0,
-                      np.where(train["Type"]=="A",1,
-                      np.where(train["Type"]=="N",2,3)))
+featcsv["Type"]=np.where(featcsv["Type"]=="~",0,
+                      np.where(featcsv["Type"]=="A",1,
+                      np.where(featcsv["Type"]=="N",2,3)))
 
 
 # In[4]:
@@ -32,7 +32,7 @@ train["Type"]=np.where(train["Type"]=="~",0,
 from sklearn.preprocessing import StandardScaler
 X = featcsv.values[:,2:]
 testX = testFeatCsv.values[:,1:]
-y = train["Type"].values
+y = featcsv["Type"].values
 print("compute min max")
 scaler = StandardScaler()
 X = scaler.fit_transform(X)
