@@ -19,8 +19,18 @@ X = featcsv.values[:,2:]
 
 y = featcsv["Type"].values
 
+print("compute min max")
+scaler = StandardScaler()
+X = scaler.fit_transform(X)
+
+dfObj = pd.DataFrame(X)
+firstDups = dfObj[dfObj.duplicated()]
+lastDups = dfObj[dfObj.duplicated(keep='last')]
+duplicates = list(firstDups.index.values) + list(lastDups.index.values)
+X = np.delete(X,list(duplicates),axis=0)
 
 
+y = np.delete(y,list(duplicates),axis=0)
 def report(results,classifier, n_top=3):
     file = open(classifier,"w") 
     for i in range(1, n_top + 1):
@@ -36,6 +46,18 @@ def report(results,classifier, n_top=3):
     file.close() 
 
 from sklearn.model_selection import RandomizedSearchCV
+from xgboost import XGBClassifier
+clf = XGBClassifier()
+param_dist  = {"min_child_weight": range(0,4000,10),
+             "max_depth": range(0,4000,10),
+			 "gamma":range(0,4000,10)}
+
+random_search = RandomizedSearchCV(clf, param_distributions=param_dist,
+                                  n_iter=500, cv=4,random_state=64,n_jobs=-1,verbose=2)
+
+random_search.fit(X, y)
+report(random_search.cv_results_,"xgboostRS.txt")
+
 from sklearn.ensemble import RandomForestClassifier
 
 clf = RandomForestClassifier()
