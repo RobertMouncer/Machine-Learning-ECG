@@ -1,18 +1,16 @@
-#!/import pandas as pd
+
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
 print("reading in files...")
 featcsv = pd.read_csv("./train_feat.csv").fillna(0)
 
 print("read in files...")
-
-
-
 
 import numpy as np
 
 featcsv["Type"]=np.where(featcsv["Type"]=="~",0,
                       np.where(featcsv["Type"]=="A",1,
                       np.where(featcsv["Type"]=="N",2,3)))
-
 
 
 X = featcsv.values[:,2:]
@@ -27,9 +25,8 @@ dfObj = pd.DataFrame(X)
 firstDups = dfObj[dfObj.duplicated()]
 lastDups = dfObj[dfObj.duplicated(keep='last')]
 duplicates = list(firstDups.index.values) + list(lastDups.index.values)
+
 X = np.delete(X,list(duplicates),axis=0)
-
-
 y = np.delete(y,list(duplicates),axis=0)
 def report(results,classifier, n_top=3):
     file = open(classifier,"w") 

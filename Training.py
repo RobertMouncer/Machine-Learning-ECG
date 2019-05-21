@@ -3,7 +3,6 @@
 
 # In[2]:
 
-
 import pandas as pd
 
 print("reading in files...")
@@ -19,13 +18,11 @@ print("read in files...")
 
 # In[3]:
 
-
 import numpy as np
 
 featcsv["Type"]=np.where(featcsv["Type"]=="~",0,
                       np.where(featcsv["Type"]=="A",1,
                       np.where(featcsv["Type"]=="N",2,3)))
-
 
 # In[4]:
 
@@ -46,8 +43,6 @@ firstDups = dfObj[dfObj.duplicated()]
 lastDups = dfObj[dfObj.duplicated(keep='last')]
 duplicates = list(firstDups.index.values) + list(lastDups.index.values)
 
-# In[17]:
-
 X = np.delete(X,list(duplicates),axis=0)
 len(X)
 print(X.shape)
@@ -55,7 +50,6 @@ print(X.shape)
 y = np.delete(y,list(duplicates),axis=0)
 len(y)
 # In[17]:
-
 
 def report(results,classifier, n_top=3):
     file = open(classifier,"w") 
@@ -78,11 +72,10 @@ def outputResults(output_data,filename):
 
 # In[42]:
 
-
 print("running XBoost")
 
 from xgboost import XGBClassifier
-model = XGBClassifier(max_depth=10)
+model = XGBClassifier(max_depth=380, n_estimators=120)
 model.fit(X, y)
 prediction = model.predict(testX)
 prediction = np.where(prediction==0,'~',np.where(prediction==1,'A',np.where(prediction==2,'N','O')))
@@ -90,10 +83,7 @@ output_data = {'ID':list(testFeatCsv.values[:,0]),
                    'Predicted': list(prediction)}
 outputResults(output_data,"xBoostResults.csv")
 
-
-
 print("running Boost")
-
 
 from sklearn.ensemble import GradientBoostingClassifier
 
@@ -106,24 +96,6 @@ prediction = np.where(prediction==0,'~',np.where(prediction==1,'A',np.where(pred
 output_data = {'ID':list(testFeatCsv.values[:,0]),
                    'Predicted': list(prediction)}
 outputResults(output_data,"boostResults.csv")
-
-# In[42]:
-print("running Boost2")
-
-
-from sklearn.ensemble import GradientBoostingClassifier
-
-clf = GradientBoostingClassifier(max_depth=10, n_estimators=350)
-
-clf.fit(X, y)
-prediction = clf.predict(testX)
-
-prediction = np.where(prediction==0,'~',np.where(prediction==1,'A',np.where(prediction==2,'N','O')))
-output_data = {'ID':list(testFeatCsv.values[:,0]),
-                   'Predicted': list(prediction)}
-outputResults(output_data,"boostResults2.csv")
-# In[42]:
-
 
 print("running random forest")
 

@@ -6,6 +6,7 @@ import pandas as pd
 from keras.models import Sequential
 from keras.layers import  Dense, Conv1D, GlobalAveragePooling1D, MaxPooling1D, Dropout
 import numpy as np
+from keras.utils import to_categorical
 
 print("reading in files...")
 train = pd.read_csv("./train_signal.csv").fillna(0)
@@ -15,11 +16,9 @@ print("read in files...")
 train.head()
 
 
-
 train["Type"]=np.where(train["Type"]=="~",0,
                       np.where(train["Type"]=="A",1,
                       np.where(train["Type"]=="N",2,3)))
-
 
 
 from sklearn.preprocessing import StandardScaler
@@ -30,7 +29,6 @@ print("compute min max")
 scaler = StandardScaler()
 X = scaler.fit_transform(X)
 testX = scaler.transform(testX)
-
 
 
 print("data preprocessing...")
@@ -50,7 +48,6 @@ def outputResults(output_data,filename):
     df = pd.DataFrame(output_data, columns = ['ID','Predicted'])
     df.to_csv(filename, index=None, header=True)
 
-from keras.utils import to_categorical
 
 y_train = to_categorical(y)
 

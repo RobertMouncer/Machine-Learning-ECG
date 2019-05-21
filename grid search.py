@@ -3,7 +3,7 @@
 
 # In[2]:
 
-
+from sklearn.preprocessing import StandardScaler
 import pandas as pd
 
 featcsv = pd.read_csv("./train_feat.csv").fillna(0)
@@ -46,7 +46,6 @@ def report(results,classifier, n_top=3):
     file.close() 
 
 
-
 print("running xgboost")
 
 from sklearn.model_selection import GridSearchCV
@@ -61,7 +60,6 @@ grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
 grid_search.fit(X, y)
 report(grid_search.cv_results_,"xgboostGS.txt")
 
-
 from sklearn.ensemble import RandomForestClassifier
 
 clf = RandomForestClassifier()
@@ -72,9 +70,6 @@ param_grid  = {"n_estimators": range(1800,1900,10),
 grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
 grid_search.fit(X, y)
 report(grid_search.cv_results_,"randomforestGS.txt")
-
-
-
 
 from sklearn.neighbors import KNeighborsClassifier
 clf = KNeighborsClassifier()
@@ -87,7 +82,6 @@ param_grid = {"n_neighbors": range(10,30,1),
 grid_search = GridSearchCV(clf, param_grid=param_grid,n_jobs=-1,verbose=2, cv=4)
 grid_search.fit(X, y)
 report(grid_search.cv_results_,"nearestNGS.txt")
-
 
 from sklearn.ensemble import GradientBoostingClassifier
 clf = GradientBoostingClassifier()
